@@ -28,7 +28,7 @@ public class JDBCOpponentDao implements OpponentDao {
     }
 
     @Override
-    public Set<Opponent> findAll() {
+    public Set<Opponent> findAll(String sqlQuery) {
         return null;
     }
 

@@ -1,6 +1,6 @@
 <html>
     <body>
         <h2>Hello World!</h2>
-        <a href="./servlet">EEEE</a>
+        <a href="./servlet">Your organizer</a>
     </body>
 </html>

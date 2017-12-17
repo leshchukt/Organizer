@@ -1,10 +1,7 @@
 package ua.training.controller;
 
-import ua.training.model.dao.DaoFactory;
-import ua.training.model.dao.EventDao;
-import ua.training.model.dao.implementation.JDBCEventDao;
 import ua.training.model.entity.Event;
-import ua.training.model.sort.EventSort;
+import ua.training.model.service.EventService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,9 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-@WebServlet ("/servlet")
+//@WebServlet ("/servlet")
 public class Servlet extends HttpServlet {
 
+    EventService eventService = new EventService();
     @Override
     protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws ServletException, IOException {
@@ -27,17 +25,22 @@ public class Servlet extends HttpServlet {
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletRequest.setCharacterEncoding("UTF-8");
 
-        DaoFactory daoFactory = DaoFactory.getInstance();
-        EventDao eventDao = daoFactory.createEventDao();
+        Set<Event> events = eventService.getAllEvents();
+        httpServletRequest.setAttribute("events", events);
 
-        Set<Event> events = eventDao.findAll();
+        List<Event> sortedEvents = eventService.sortEventsByDate(new ArrayList<>(events));
+        List<Event> eventsByDate = eventService.getEventsByDate(LocalDate.of(2018, 1, 10));
+        List<Event> eventsWithinDates = eventService.getEventsWithinDates(
+                LocalDate.of(2017, 12, 15),
+                LocalDate.of(2018, 1, 9));
+        List<Event> comingEvents = eventService.getEventsForNextWeek();
 
-        EventSort eventSort = new EventSort();
-        List<Event> event = eventSort.sortEventsByDate(new ArrayList<>(events));
 
-        List<Event> eventsByDate = eventDao.findByDate(LocalDate.of(2018, 01, 10));
-        httpServletRequest.setAttribute("event", event);
+        httpServletRequest.setAttribute("sortedEvents", sortedEvents);
         httpServletRequest.setAttribute("eventsByDate", eventsByDate);
+        httpServletRequest.setAttribute("eventsWithinDates", eventsWithinDates);
+        httpServletRequest.setAttribute("comingEvents", comingEvents);
+
         httpServletRequest.getRequestDispatcher("./WEB-INF/eventList.jsp").forward(httpServletRequest,httpServletResponse);
     }
 }

@@ -28,7 +28,7 @@ public class JDBCCategoryDao implements CategoryDao {
     }
 
     @Override
-    public Set<Category> findAll() {
+    public Set<Category> findAll(String sqlQuery) {
         return null;
     }
 

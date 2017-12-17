@@ -8,4 +8,5 @@ import java.util.List;
 public interface EventDao extends GenericDao<Event>{
     List<Event> findByDate(LocalDate date);
     List<Event> findWithinDates(LocalDate startDate, LocalDate endDate);
+    List<Event> checkComingEvents();
 }

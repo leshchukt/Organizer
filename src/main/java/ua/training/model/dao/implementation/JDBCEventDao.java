@@ -3,13 +3,10 @@ package ua.training.model.dao.implementation;
 import ua.training.model.dao.EventDao;
 import ua.training.model.dao.mapper.*;
 import ua.training.model.entity.*;
+import ua.training.view.SQLQuery;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class JDBCEventDao implements EventDao {
@@ -39,6 +36,7 @@ public class JDBCEventDao implements EventDao {
 
     @Override
     public List<Event> findByDate(LocalDate date) {
+        /*
         List<Event> eventsByDate = new ArrayList<>();
         for(Event event : findAll()) {
             if (event.getDate().toLocalDate().equals(date)) {
@@ -46,10 +44,14 @@ public class JDBCEventDao implements EventDao {
             }
         }
         return eventsByDate;
+        */
+        String byDate = " WHERE DATE(event.date) = \'" + date + "\'";
+        return new ArrayList<>(findAll(SQLQuery.selectAll + byDate));
     }
 
     @Override
     public List<Event> findWithinDates(LocalDate startDate, LocalDate endDate) {
+        /*
         List<Event> eventsWithinDates = new ArrayList<>();
         for(Event event : findAll()) {
             LocalDate eventDate = event.getDate().toLocalDate();
@@ -58,11 +60,23 @@ public class JDBCEventDao implements EventDao {
             }
         }
         return eventsWithinDates;
+    */
+        String withinDates = " WHERE DATE(event.date) BETWEEN \'" +
+                startDate + "\' AND \'" +
+                endDate + "\'";
+        return new ArrayList<>(findAll(SQLQuery.selectAll + withinDates));
     }
 
     @Override
-    public Set<Event> findAll() {
-        Set<Event> resultSet = new HashSet<>();
+    public List<Event> checkComingEvents() {
+        String eventsForNextWeek = " WHERE DATE(event.date) BETWEEN \'" +
+                LocalDate.now() + "\' AND \'" +
+                LocalDate.now().plusWeeks(1) + "\'";
+        return new ArrayList<>(findAll(SQLQuery.selectAll + eventsForNextWeek));
+    }
+
+    @Override
+    public Set<Event> findAll(String sqlQuery) {
         Map<Integer,Opponent> opponentHashMap = new HashMap<>();
         Map<Integer,Event> eventHashMap = new HashMap<>();
         Map<Integer,Category> categoryHashMap = new HashMap<>();
@@ -73,11 +87,7 @@ public class JDBCEventDao implements EventDao {
         MeetingEventMapper meetingEventMapper = new MeetingEventMapper();
 
         try (Statement ps = connection.createStatement()){
-            ResultSet rs = ps.executeQuery(
-                    "SELECT DISTINCT * FROM event " +
-                            "LEFT JOIN category ON event.idcategory = category.idcategory " +
-                            "left join event_has_oponent on event.idevent = event_has_oponent.idevent " +
-                            "left join oponent on event_has_oponent.idoponent = oponent.idoponent");
+            ResultSet rs = ps.executeQuery(sqlQuery);
             while ( rs.next() ){
 
                 Event result = getEvent(eventMapper, recurringEventMapper, meetingEventMapper, rs);
@@ -94,15 +104,19 @@ public class JDBCEventDao implements EventDao {
                     ((MeetingEvent)result).getOpponents().add(opponent);
                     opponent.getEvents().add((MeetingEvent) result);
                 }
-                resultSet.add(result);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return resultSet;
+        return new HashSet<>(eventHashMap.values());
     }
 
-    private Event getEvent(EventMapper eventMapper, RecurringEventMapper recurringEventMapper, MeetingEventMapper meetingEventMapper, ResultSet rs) throws SQLException {
+    private Event getEvent(EventMapper eventMapper,
+                           RecurringEventMapper recurringEventMapper,
+                           MeetingEventMapper meetingEventMapper,
+                           ResultSet rs)
+            throws SQLException {
+
         return isMeetingEvent(rs)
                             ? meetingEventMapper.extractFromResultSet(rs)
                             : (isRecurringEvent(rs)
@@ -122,7 +136,11 @@ public class JDBCEventDao implements EventDao {
     }
 
     @Override
-    public void close() throws Exception {
-
+    public void close() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

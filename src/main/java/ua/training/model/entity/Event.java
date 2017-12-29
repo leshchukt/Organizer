@@ -1,11 +1,6 @@
 package ua.training.model.entity;
 
-import java.awt.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 public class Event {
     private int idEvent;
@@ -62,7 +57,7 @@ public class Event {
                 ", eventTitle='" + eventTitle + '\'' +
                 ", date='" + date + '\'' +
                 ", category=" + category +
-                "}\n";
+                "}";
     }
 
 }

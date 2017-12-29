@@ -19,7 +19,7 @@ public class EventService implements SQLQuery{
         try (EventDao dao = daoFactory.createEventDao()) {
             return dao.findAll(selectAll);
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -35,7 +35,7 @@ public class EventService implements SQLQuery{
         try (EventDao dao = daoFactory.createEventDao()) {
             return dao.findWithinDates(startDate, endDate);
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -43,7 +43,7 @@ public class EventService implements SQLQuery{
         try (EventDao dao = daoFactory.createEventDao()) {
             return dao.checkComingEvents();
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 

@@ -3,28 +3,46 @@ package ua.training.controller;
 import ua.training.model.entity.Event;
 import ua.training.model.service.EventService;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-//@WebServlet ("/servlet")
+@WebServlet ("/Servlet")
 public class Servlet extends HttpServlet {
 
-    EventService eventService = new EventService();
     @Override
     protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws ServletException, IOException {
         httpServletResponse.setContentType("text/html");
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletRequest.setCharacterEncoding("UTF-8");
+/*
+        String login = httpServletRequest.getParameter("login");
+        String password = httpServletRequest.getParameter("password");
+        HttpSession httpSession = httpServletRequest.getSession();
+        ServletContext servletContext = httpServletRequest.getServletContext();
+        httpSession.setAttribute("login", login);
+        httpSession.setAttribute("password", password);
+        servletContext.setAttribute("login", login);
+        servletContext.setAttribute("password", password);
 
+        PrintWriter out = httpServletResponse.getWriter();
+        out.println(login);
+        out.println(password);
+        out.close();
+        */
+
+        EventService eventService = new EventService();
         Set<Event> events = eventService.getAllEvents();
         httpServletRequest.setAttribute("events", events);
 
@@ -41,6 +59,16 @@ public class Servlet extends HttpServlet {
         httpServletRequest.setAttribute("eventsWithinDates", eventsWithinDates);
         httpServletRequest.setAttribute("comingEvents", comingEvents);
 
-        httpServletRequest.getRequestDispatcher("./WEB-INF/eventList.jsp").forward(httpServletRequest,httpServletResponse);
+        httpServletRequest.getRequestDispatcher("./WEB-INF/eventList.jsp")
+                .forward(httpServletRequest,httpServletResponse);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+            throws ServletException, IOException {
+        httpServletResponse.setContentType("text/html");
+        httpServletResponse.setCharacterEncoding("UTF-8");
+        httpServletRequest.setCharacterEncoding("UTF-8");
+
     }
 }

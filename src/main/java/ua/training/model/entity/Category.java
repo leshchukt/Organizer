@@ -2,7 +2,7 @@ package ua.training.model.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/*
 public class Category {
     private int idCategory;
     private String categoryName;
@@ -47,5 +47,31 @@ public class Category {
                 "idCategory=" + idCategory +
                 ", categoryName='" + categoryName + '\'' +
                 '}';
+    }
+}
+*/
+
+public enum Category {
+
+    IMPORTANT(1),
+    DEADLINE(2),
+    ROUTINE(3),
+    WORK(4),
+    FAMILY(5),
+    HOLIDAY(6);
+
+    private final int idCategory;
+
+    Category(int idCategory){
+        this.idCategory = idCategory;
+    }
+
+    public int getIdCategory() {
+        return idCategory;
+    }
+
+    @Override
+    public String toString() {
+        return Category.this.name();
     }
 }

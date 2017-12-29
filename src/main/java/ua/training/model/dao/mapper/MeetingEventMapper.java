@@ -1,5 +1,6 @@
 package ua.training.model.dao.mapper;
 
+import ua.training.model.entity.Category;
 import ua.training.model.entity.Event;
 import ua.training.model.entity.MeetingEvent;
 
@@ -14,6 +15,7 @@ public class MeetingEventMapper extends EventMapper {
         result.setIdEvent(rs.getInt("idevent") );
         result.setEventTitle( rs.getString("eventtitle") );
         result.setDate(rs.getTimestamp("date").toLocalDateTime());
+        result.setCategory(Category.valueOf(rs.getString("category")));
 
         return result;
     }

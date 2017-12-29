@@ -43,7 +43,7 @@ public class JDBCOpponentDao implements OpponentDao {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close(){
 
     }
 }

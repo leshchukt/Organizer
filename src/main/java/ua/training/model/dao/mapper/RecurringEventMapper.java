@@ -1,5 +1,6 @@
 package ua.training.model.dao.mapper;
 
+import ua.training.model.entity.Category;
 import ua.training.model.entity.RecurringEvent;
 
 import java.sql.ResultSet;
@@ -14,6 +15,7 @@ public class RecurringEventMapper extends EventMapper {
         result.setEventTitle( rs.getString("eventtitle") );
         result.setDate(rs.getTimestamp("date").toLocalDateTime());
         result.setPeriod(rs.getInt("period"));
+        result.setCategory(Category.valueOf(rs.getString("category")));
 
         return result;
     }

@@ -6,7 +6,6 @@ public abstract class DaoFactory {
     private static DaoFactory daoFactory;
 
     public abstract EventDao createEventDao();
-    public abstract CategoryDao createCategoryDao();
     public abstract OpponentDao createOpponentDao();
 
     public static DaoFactory getInstance(){

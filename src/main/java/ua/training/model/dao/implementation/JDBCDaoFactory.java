@@ -1,6 +1,5 @@
 package ua.training.model.dao.implementation;
 
-import ua.training.model.dao.CategoryDao;
 import ua.training.model.dao.DaoFactory;
 import ua.training.model.dao.EventDao;
 import ua.training.model.dao.OpponentDao;
@@ -9,8 +8,6 @@ import ua.training.view.DBConnectionConstants;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JDBCDaoFactory extends DaoFactory implements DBConnectionConstants {
@@ -31,10 +28,6 @@ public class JDBCDaoFactory extends DaoFactory implements DBConnectionConstants 
         return new JDBCEventDao(getConnection());
     }
 
-    @Override
-    public CategoryDao createCategoryDao() {
-        return new JDBCCategoryDao(getConnection());
-    }
 
     @Override
     public OpponentDao createOpponentDao() {

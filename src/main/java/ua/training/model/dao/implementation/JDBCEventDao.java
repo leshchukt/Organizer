@@ -79,9 +79,8 @@ public class JDBCEventDao implements EventDao {
     public Set<Event> findAll(String sqlQuery) {
         Map<Integer,Opponent> opponentHashMap = new HashMap<>();
         Map<Integer,Event> eventHashMap = new HashMap<>();
-        Map<Integer,Category> categoryHashMap = new HashMap<>();
+
         OpponentMapper opponentMapper = new OpponentMapper();
-        CategoryMapper categoryMapper = new CategoryMapper();
         EventMapper eventMapper = new EventMapper();
         RecurringEventMapper recurringEventMapper = new RecurringEventMapper();
         MeetingEventMapper meetingEventMapper = new MeetingEventMapper();
@@ -89,24 +88,21 @@ public class JDBCEventDao implements EventDao {
         try (Statement ps = connection.createStatement()){
             ResultSet rs = ps.executeQuery(sqlQuery);
             while ( rs.next() ){
-
+                System.out.println(1);
                 Event result = getEvent(eventMapper, recurringEventMapper, meetingEventMapper, rs);
-
+                System.out.println(2);
                 Opponent opponent = opponentMapper.extractFromResultSet(rs);
-                Category category = categoryMapper.extractFromResultSet(rs);
                 result = eventMapper.makeUnique(eventHashMap, result);
                 opponent = opponentMapper.makeUnique(opponentHashMap, opponent);
-                category = categoryMapper.makeUnique(categoryHashMap, category);
-                result.setCategory(category);
-                category.getEvents().add(result);
-
+                System.out.println(3);
                 if (isMeetingEvent(rs)) {
                     ((MeetingEvent)result).getOpponents().add(opponent);
                     opponent.getEvents().add((MeetingEvent) result);
                 }
+                System.out.println(4);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("problem in findAll");
         }
         return new HashSet<>(eventHashMap.values());
     }

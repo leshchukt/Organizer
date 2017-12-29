@@ -20,6 +20,7 @@ public class EventMapper implements EntityMapper<Event>{
         result.setIdEvent(rs.getInt("idevent") );
         result.setEventTitle( rs.getString("eventtitle") );
         result.setDate(rs.getTimestamp("date").toLocalDateTime());
+        result.setCategory(Category.valueOf(rs.getString("category")));
 
         return result;
     }

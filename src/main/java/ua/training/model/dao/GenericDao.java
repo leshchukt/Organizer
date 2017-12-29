@@ -8,4 +8,5 @@ public interface GenericDao<T> extends AutoCloseable {
     Set<T> findAll(String sqlQuery);
     void update(T entity);
     void delete(int id);
+    void close();
 }
